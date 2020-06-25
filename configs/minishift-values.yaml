@@ -1,0 +1,73 @@
+##
+## Sample of values.yaml for deployment of the DevOps stack.
+## See Readme.md for usage instructions.
+##
+
+devops-gitea:
+  images:
+    gitea:
+      name: "NAMESPACE/gitea"
+      tag: "0.1.0"
+
+  ingress:
+    tls: []
+
+  service:
+    http:
+      externalHost: git.MINISHIFT_IP.nip.io
+    ssh:
+      externalHost: git.MINISHIFT_IP.nip.io
+
+  persistence:
+    giteaSize: 2Gi
+    postgresSize: 2Gi
+    storageClass: null   # use minishift PV provisioner
+
+
+devops-nexus:
+  nexus:
+    imageName: NAMESPACE/nexus
+    imageTag: 0.2.0
+    livenessProbe:
+      failureThreshold: 10
+    readinessProbe:
+      failureThreshold: 10
+
+  nexusProxy:
+    env:
+      nexusHttpHost: nexus.MINISHIFT_IP.nip.io
+
+  ingress:
+    tls:
+      enabled: false
+
+  persistence:
+    storageClass: null   # use minishift PV provisioner
+    storageSize: 6Gi
+
+  serviceAccount:
+    create: false
+    name: default
+
+  nexusBackup:
+    persistence:
+      enabled: false
+
+jenkins:
+  master:
+    ingress:
+      hostName: jenkins.MINISHIFT_IP.nip.io
+      tls: []
+    nexusUrl: http://nexus.MINISHIFT_IP.nip.io
+
+  persistence:
+    enabled: true
+    storageClass: null   # use minishift PV provisioner
+    size: 2Gi
+
+  serviceAccount:
+    create: false
+    name: default
+
+  rbac:
+    create: false

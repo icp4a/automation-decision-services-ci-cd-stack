@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "fullname" . }}-init-config
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+{{- range $index, $user := .Values.config.users }}
+  user.{{ $index }}: |
+      {{ $user.username }}
+      {{ $user.password }}
+      {{- if $user.admin }}
+      admin
+      {{- else }}
+      lambda
+      {{- end }}
+{{- end }}
