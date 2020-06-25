@@ -1,0 +1,73 @@
+##
+## Sample of values.yaml for deployment of the DevOps stack.
+## See Readme.md for usage instructions.
+##
+
+devops-gitea:
+  images:
+    gitea:
+      name: "IMAGE_REGISTRY/PROJECT/gitea"
+      tag: "0.1.0"
+
+  ingress:
+    tls: []
+
+  service:
+    http:
+      externalHost: GIT_HOST
+    ssh:
+      externalHost: GIT_HOST
+
+  persistence:
+    giteaSize: 2Gi
+    postgresSize: 2Gi
+    storageClass: null   # use default PV provisioner
+
+
+devops-nexus:
+  nexus:
+    imageName: IMAGE_REGISTRY/PROJECT/nexus
+    imageTag: 0.2.0
+    livenessProbe:
+      failureThreshold: 10
+    readinessProbe:
+      failureThreshold: 10
+
+  nexusProxy:
+    env:
+      nexusHttpHost: NEXUS_HOST
+
+  ingress:
+    tls:
+      enabled: false
+
+  persistence:
+    storageClass: null   # use default PV provisioner
+    storageSize: 6Gi
+
+  serviceAccount:
+    create: false
+    name: default
+
+  nexusBackup:
+    persistence:
+      enabled: false
+
+jenkins:
+  master:
+    ingress:
+      hostName: JENKINS_HOST
+      tls: []
+    nexusUrl: http://NEXUS_HOST
+
+  persistence:
+    enabled: true
+    storageClass: null   # use default PV provisioner
+    size: 2Gi
+
+  serviceAccount:
+    create: false
+    name: default
+
+  rbac:
+    create: false
