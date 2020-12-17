@@ -62,7 +62,7 @@ devops-gitea:
 devops-nexus:
   nexus:
     imageName: devops-stack/nexus
-    imageTag: 0.2.0
+    imageTag: 0.2.1
 
     resources:
       requests:
@@ -129,13 +129,13 @@ jenkins:
 
     # List of plugins to be install during Jenkins master start
     installPlugins:
-      - workflow-job:2.38
+      - workflow-job:2.40
       - workflow-aggregator:2.6
-      - credentials-binding:1.18
-      - git:4.2.2
-      - maven-plugin:3.6
-      - config-file-provider:3.6.2
-      - configuration-as-code:1.39
+      - credentials-binding:1.24
+      - git:4.4.5
+      - maven-plugin:3.8
+      - config-file-provider:3.7.0
+      - configuration-as-code:1.46
 
     initScripts:
         # from https://github.com/jenkinsci/jenkins-scripts/blob/master/scriptler/configMavenAutoInstaller.groovy

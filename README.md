@@ -195,10 +195,10 @@ Procedure:
         
         ```
         docker build -t "$PUBLIC_IMAGE_REGISTRY/$PROJECT/gitea:0.1.0" ./images/gitea
-        docker build -t "$PUBLIC_IMAGE_REGISTRY/$PROJECT/nexus:0.2.0" ./images/nexus
+        docker build -t "$PUBLIC_IMAGE_REGISTRY/$PROJECT/nexus:0.2.1" ./images/nexus
         docker login -u $(oc whoami) -p $(oc whoami -t) $PUBLIC_IMAGE_REGISTRY
         docker push "$PUBLIC_IMAGE_REGISTRY/$PROJECT/gitea:0.1.0"
-        docker push "$PUBLIC_IMAGE_REGISTRY/$PROJECT/nexus:0.2.0"
+        docker push "$PUBLIC_IMAGE_REGISTRY/$PROJECT/nexus:0.2.1"
         ```
     
     1. Customize the Helm values files.
