@@ -11,7 +11,7 @@ deploymentStrategy:
 
 nexus:
   imageName: devops-stack/nexus
-  imageTag: 3.23.0-03
+  imageTag: 3.27.0
   imagePullPolicy: IfNotPresent
   config:
     users: []
@@ -51,7 +51,7 @@ nexus:
   #   fsGroup: 2000
   podAnnotations: {}
   livenessProbe:
-    initialDelaySeconds: 30
+    initialDelaySeconds: 300
     periodSeconds: 30
     failureThreshold: 6
     # timeoutSeconds: 10

@@ -28,7 +28,7 @@ devops-gitea:
 devops-nexus:
   nexus:
     imageName: ci-cd-stack/nexus
-    imageTag: 0.2.0
+    imageTag: 0.2.1
     imagePullPolicy: Never # see gitea.images.pullPolicy above
     livenessProbe:
       failureThreshold: 10

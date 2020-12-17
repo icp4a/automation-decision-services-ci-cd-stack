@@ -15,4 +15,4 @@ if [ -z "$IMAGE_BASE_REPO" ] ; then
 fi
 
 docker push "$IMAGE_BASE_REPO/gitea:0.1.0"
-docker push "$IMAGE_BASE_REPO/nexus:0.2.0"
+docker push "$IMAGE_BASE_REPO/nexus:0.2.1"

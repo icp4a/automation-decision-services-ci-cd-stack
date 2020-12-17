@@ -27,7 +27,7 @@ devops-gitea:
 devops-nexus:
   nexus:
     imageName: IMAGE_REGISTRY/PROJECT/nexus
-    imageTag: 0.2.0
+    imageTag: 0.2.1
     livenessProbe:
       failureThreshold: 10
     readinessProbe:

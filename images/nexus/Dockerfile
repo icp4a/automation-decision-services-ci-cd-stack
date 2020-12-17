@@ -1,4 +1,4 @@
-FROM quay.io/travelaudience/docker-nexus:3.23.0
+FROM quay.io/travelaudience/docker-nexus:3.27.0
 
 USER root
 RUN apk update && apk upgrade --no-cache

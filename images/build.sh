@@ -19,7 +19,7 @@ fi
 BASE_DIR=$(dirname $0)
 
 GITEA_IMG_VERSION=0.1.0
-NEXUS_IMG_VERSION=0.2.0
+NEXUS_IMG_VERSION=0.2.1
 
 echo "Builder gitea image..."
 docker build -t "$IMAGE_BASE_REPO/gitea:$GITEA_IMG_VERSION" $BASE_DIR/gitea
