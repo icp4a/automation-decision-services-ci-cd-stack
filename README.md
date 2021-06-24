@@ -38,7 +38,7 @@ computer, you can install the CI/CD stack in the same Minikube or Minishift inst
 
 * A Kubernetes cluster; see below for installation instructions on Minikube, Minishift, or OpenShift 3.11.
 * Docker command line
-* Helm 2.14.3 or above
+* Helm v3
 * Python 3.6 or above
 
 ## Installation
@@ -48,7 +48,7 @@ computer, you can install the CI/CD stack in the same Minikube or Minishift inst
 Prerequisites:
 * Minikube 1.1.1 or above, with addons `ingress` and `storage-provisioner` enabled (see `minikube addons list`).                  If you use version 1.4 or above, use the start option `--kubernetes-version=1.15.0`.
 * Docker command line
-* Helm 2.14.3 or above
+* Helm v3
 
 Procedure:
 
@@ -110,7 +110,7 @@ Prerequisites:
 - Minishift 1.34 or above
 - `oc` OpenShift command line (delivered with Minishift)
 - Docker command line
-- Helm 2.14.3 or above
+- Helm v3
 
 The following procedure creates a new project in OpenShift (default name is `ci-cd`) and installs
 the three components of the CI/CD stack.  Helm is used to generated the
@@ -166,7 +166,7 @@ Prerequisites:
 - OpenShift cluster 3.11 or 4.2
 - `oc` OpenShift command line
 - Docker command line
-- Helm 2.14.3 or above
+- Helm v3
 
 The following procedure creates a new project in OpenShift and installs the three components of the CI/CD stack.
 Helm is used to generate the Kubernetes resource files from the Helm templates but the Tiller server is not required.
@@ -217,7 +217,7 @@ Procedure:
         Use Helm to generate the Kubernetes resource files from the Helm templates and to deploy the sample CI/CD stack.
         
         ```
-        helm template helm-charts --name devops-stack --namespace $PROJECT --values /tmp/customized_openshift_values.yaml  > /tmp/openshift-rendered.yaml
+        helm template helm-charts --name-template devops-stack --namespace $PROJECT --values /tmp/customized_openshift_values.yaml  > /tmp/openshift-rendered.yaml
         oc create -f /tmp/openshift-rendered.yaml
         ```
         
@@ -260,10 +260,10 @@ other artifacts from your Automation Decision Services installation and to uploa
     ./scripts/install-maven-plugin.sh <ADS_DESIGNER_URL> <NEXUS_URL> <ACCESS_TOKEN>
     ```
 
-    For example, if you installed Automation Decision Services and the CI/CD stack locally on Minishift and the IP address is `192.168.64.10` and you obtained the access token `sCBa88JWCXu9tK6Zcjn4sOt3Ow5NYgNai3AF5wiO`, run the script:
+    For example, if you installed Automation Decision Services and the CI/CD stack locally on Minishift and the IP address is `192.168.64.10` and you obtained the access token `sCBa88JWCXu9tK6Zcjn4sOt3Ow5NYgNai3AF5wiO`, run the script (do not forget the /ads context root since 21.0.2):
 
     ```
-    ./scripts/install-maven-plugin.sh 'https://ads.192.168.64.10.nip.io/' 'http://nexus.192.168.64.10.nip.io/' 'sCBa88JWCXu9tK6Zcjn4sOt3Ow5NYgNai3AF5wiO'
+    ./scripts/install-maven-plugin.sh 'https://ads.192.168.64.10.nip.io/ads' 'http://nexus.192.168.64.10.nip.io/' 'sCBa88JWCXu9tK6Zcjn4sOt3Ow5NYgNai3AF5wiO'
     ```
 1. Check that artifacts have been uploaded into nexus:
 
