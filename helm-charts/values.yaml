@@ -132,10 +132,10 @@ jenkins:
       - workflow-job:2.40
       - workflow-aggregator:2.6
       - credentials-binding:1.24
-      - git:4.4.5
+      - git:4.7.1
       - maven-plugin:3.8
-      - config-file-provider:3.7.0
-      - configuration-as-code:1.46
+      - config-file-provider:3.8.0
+      - configuration-as-code:1.47
 
     initScripts:
         # from https://github.com/jenkinsci/jenkins-scripts/blob/master/scriptler/configMavenAutoInstaller.groovy
