@@ -111,7 +111,7 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `nexusProxyRoute.enabled`     | Set to true to create route for additional service | `false` |
 | `nexusProxyRoute.labels`      | Labels to be added to proxy route            | `{}` |
 | `nexusProxyRoute.annotations` | Annotations to be added to proxy route       | `{}` |
-| `nexusProxyRoute.path`        | Host name of Route e.g jenkins.example.com   |  nil |
+| `nexusProxyRoute.path`        | Host name of Route e.g nexus.example.com   |  nil |
 | `persistence.enabled`                       | Create a volume for storage         | `true`                                  |
 | `persistence.accessMode`                    | ReadWriteOnce or ReadOnly           | `ReadWriteOnce`                         |
 | `persistence.storageClass`                  | Storage class of Nexus PVC          | `nil`                                   |
@@ -134,7 +134,7 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `ingress.enabled`                           | Create an ingress for Nexus         | `false`                                  |
 | `ingress.annotations`                       | Annotations to enhance ingress configuration  | `{}`                          |
 | `ingress.tls.enabled`                       | Enable TLS                          | `true`                                 |
-| `ingress.tls.secretName`                    | Name of the secret storing TLS cert, `false` to use the Ingress' default certificate | `nexus-tls`                             |
+| `ingress.tls.secretName`                    | Name of the secret storing TLS cert, `false` to use the Ingress' default certificate | `cicd-tls`                             |
 | `ingress.path`                              | Path for ingress rules. GCP users should set to `/*` | `/`                    |
 | `tolerations`                               | tolerations list                    | `[]`                                    |
 | `config.enabled`                            | Enable configmap                    | `false`                                 |
@@ -166,7 +166,7 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `route.portName`        | Target port name of service                        | `docker` |
 | `route.labels`          | Labels to be added to route                        | `{}` |
 | `route.annotations`     | Annotations to be added to route                   | `{}` |
-| `route.path`            | Host name of Route e.g jenkins.example.com         | nil |
+| `route.path`            | Host name of Route e.g application.example.com         | nil |
 | `additionalConfigMaps`  | List of ConfigMap data containing Name, Data and Labels | nil |
 
 If `nexusProxy.env.cloudIamAuthEnabled` is set to `true` the following variables need to be configured

@@ -7,7 +7,7 @@ if [[ $# -ne 3 ]] ; then
     printf "Invalid parameters: "
     printf "'%s' " "$@"
     printf "\n\n"
-    echo "Usage: $0 <ADS_BASE_URL> <NEXUS_BASE_URL> <ACCESS_TOKEN>"
+    echo "Usage: $0 <ADS_BASE_URL> <NEXUS_BASE_URL> <ZEN_AUTHORIZATION>"
     exit 1
 fi
 
@@ -19,7 +19,7 @@ fi
 
 ADS_BASE_URL=${1%/}  # chops trailing '/' from url
 NEXUS_BASE_URL=${2%/}
-ACCESS_TOKEN=${3}
+ZEN_AUTHORIZATION=${3}
 
 NEXUS_USER=${NEXUS_USER:=nexusdemo}
 NEXUS_PASSWORD=${NEXUS_PASSWORD:=nexusdemo}
@@ -41,7 +41,7 @@ sed "s|NEXUS_URL|${NEXUS_BASE_URL}|; s|NEXUS_USER|${NEXUS_USER}|; s|NEXUS_PASSWO
     $dir/settings.xml.tpl > $TMP_DIR/settings.xml
 
 # Fetch the index.json from download service
-curl -k -s -H "Authorization: Bearer $ACCESS_TOKEN" -o run/index.json "$ADS_BASE_URL/download/index.json"
+curl -k -s -H "Authorization: ZenApiKey $ZEN_AUTHORIZATION" -o run/index.json "$ADS_BASE_URL/download/index.json"
 
 # for each artifact in json which has maven coordinates, upload
 # the artifact into Nexus
@@ -58,13 +58,13 @@ jq --raw-output '.resources[]
 | while read -r -a artifact ; do
     url=$ADS_BASE_URL/download/${artifact[0]}
     echo "Downloading $url..."
-    curl -k -s -H "Expect:" -H "Authorization: Bearer $ACCESS_TOKEN" -o run/${artifact[0]} "$url"
+    curl -k -s -H "Expect:" -H "Authorization: ZenApiKey $ZEN_AUTHORIZATION" -o run/${artifact[0]} "$url"
     # pom provided
     pom=${artifact[5]:-}
     if [[  ! -z ${pom} ]] ; then
         pomurl=$ADS_BASE_URL/download/${artifact[5]}
         echo "Downloading $pomurl..."
-        curl -k -s -H "Authorization: Bearer $ACCESS_TOKEN" -o run/${artifact[5]} "$pomurl"
+        curl -k -s -H "Authorization: ZenApiKey $ZEN_AUTHORIZATION" -o run/${artifact[5]} "$pomurl"
         echo "Uploading into Nexus as GAV provided by pom file '${artifact[5]}' ..."
         $MVN --batch-mode -s "$TMP_DIR/settings.xml" \
             -Dmaven.wagon.http.ssl.insecure=true \
