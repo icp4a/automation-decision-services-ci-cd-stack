@@ -3,27 +3,6 @@
 ## See Readme.md for usage instructions.
 ##
 
-devops-gitea:
-  images:
-    gitea:
-      name: "IMAGE_REGISTRY/PROJECT/gitea"
-      tag: "0.1.0"
-
-  ingress:
-    tls: []
-
-  service:
-    http:
-      externalHost: GIT_HOST
-    ssh:
-      externalHost: GIT_HOST
-
-  persistence:
-    giteaSize: 2Gi
-    postgresSize: 2Gi
-    storageClass: null   # use default PV provisioner
-
-
 devops-nexus:
   nexus:
     imageName: IMAGE_REGISTRY/PROJECT/nexus
@@ -39,7 +18,8 @@ devops-nexus:
 
   ingress:
     tls:
-      enabled: false
+      enabled: true
+      secretName: cicd-tls
 
   persistence:
     storageClass: null   # use default PV provisioner
@@ -53,21 +33,3 @@ devops-nexus:
     persistence:
       enabled: false
 
-jenkins:
-  master:
-    ingress:
-      hostName: JENKINS_HOST
-      tls: []
-    nexusUrl: http://NEXUS_HOST
-
-  persistence:
-    enabled: true
-    storageClass: null   # use default PV provisioner
-    size: 2Gi
-
-  serviceAccount:
-    create: false
-    name: default
-
-  rbac:
-    create: false

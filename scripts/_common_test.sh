@@ -13,4 +13,4 @@ source $scriptdir/_common.sh
 
 DEBUG=1
 
-wait_deployments oc ci-cd 30 gitea nexus jenkins
+wait_deployments oc ci-cd 30 nexus

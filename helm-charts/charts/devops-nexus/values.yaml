@@ -89,7 +89,7 @@ nexusProxy:
   env:
     nexusDockerHost:
     nexusHttpHost:
-    enforceHttps: false
+    enforceHttps: true
     cloudIamAuthEnabled: false
 ## If cloudIamAuthEnabled is set to true uncomment the variables below and remove this line
   #   clientId: ""
@@ -169,18 +169,18 @@ serviceAccount:
   annotations: {}
 
 ingress:
-  enabled: false
+  enabled: true
   path: /
   labels: {}
-  annotations: {}
+  annotations:
   # # NOTE: Can't use 'false' due to https://github.com/jetstack/kube-lego/issues/173.
-  # kubernetes.io/ingress.allow-http: true
-  # kubernetes.io/ingress.class: gce
+    kubernetes.io/ingress.allow-http: true
+    kubernetes.io/ingress.class: gce
   # kubernetes.io/ingress.global-static-ip-name: ""
-  # kubernetes.io/tls-acme: true
-  tls:
-    enabled: true
-    secretName: nexus-tls
+    kubernetes.io/tls-acme: true
+#  tls:
+#    enabled: true
+#    secretName: cicd-tls
 
 tolerations: []
 
