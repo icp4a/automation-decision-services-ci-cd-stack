@@ -1,63 +1,3 @@
-devops-gitea:
-  images:
-    gitea:
-      name: "devops-stack/gitea"
-      tag: "0.1.0"
-
-
-  config:
-    disableInstaller: true
-    users:
-      - username: gitadmin
-        password: gitadmin
-        admin: true
-      - username: demo
-        password: demo
-
-    # secretKey protects at least the user session cookies.  Hard-coded for this
-    # devops sample and to avoid session cookie expiration on pod restart
-    secretKey: "1IzvrTckeRgZos26in2A4OgBVXR41guG1dx66rNhCgPWebPXLfIh5kevdFOvwHH6"
-    # internalToken ?
-
-  ingress:
-    enabled: true
-    ## annotations used by the ingress - ex for k8s nginx ingress controller:
-    ingress_annotations:
-      kubernetes.io/ingress.class: nginx
-      nginx.ingress.kubernetes.io/proxy-body-size: "500m"
-      ingress.kubernetes.io/proxy-body-size: "500m"
-      nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
-      ingress.kubernetes.io/proxy-read-timeout: "600"
-      nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
-      ingress.kubernetes.io/proxy-send-timeout: "600"
-    ##tls support for the ingress
-    #tls:
-    #  - secretName: gitea-ingress-tls
-    #    hosts:
-    #      - 'git.mycluster'
-
-  service:
-    http:
-      serviceType: ClusterIP
-      port: 3000
-      externalPort: ''
-      externalHost: git.mycluster
-    ssh:
-      serviceType: NodePort
-      port: 22
-      nodePort: 30222
-      externalPort: 30222    # same as nodePort: the public port displayed by gitea in close URLs
-      externalHost: git.mycluster
-
-  persistence:
-    enabled: true
-    giteaSize: 6Gi
-    postgresSize: 6Gi
-    #storageClass: null
-    accessMode: ReadWriteMany
-    annotations:
-      "helm.sh/resource-policy": keep
-
 
 devops-nexus:
   nexus:
@@ -92,129 +32,15 @@ devops-nexus:
       nginx.ingress.kubernetes.io/proxy-body-size: 500m
       ingress.kubernetes.io/proxy-body-size: 500m
     # # NOTE: Can't use 'false' due to https://github.com/jetstack/kube-lego/issues/173.
-    # kubernetes.io/ingress.allow-http: true
-    # kubernetes.io/ingress.class: gce
+      kubernetes.io/ingress.allow-http: true
+      kubernetes.io/ingress.class: gce
     # kubernetes.io/ingress.global-static-ip-name: ""
-    # kubernetes.io/tls-acme: true
-    # tls:
-    #   enabled: true
-    #   secretName: sample-tls
+      kubernetes.io/tls-acme: true
+    tls:
+      enabled: true
+      secretName: cicd-tls
 
   persistence:
     #storageClass: null
     storageSize: 6Gi
 
-
-jenkins:
-  master:
-    imagePullSecretName: sa-devops-stack-jenkins
-
-    # For minikube, set this to NodePort, elsewhere use LoadBalancer
-    # Use ClusterIP if your setup includes ingress controller
-    serviceType: ClusterIP
-
-    # Don't build on master
-    numExecutors: 1
-
-    adminUser: admin
-    adminPassword: admin
-
-    containerEnv:
-        - name: GIT_CURL_VERBOSE
-          value: "1"
-        - name: GIT_SSL_NO_VERIFY
-          value: "1"
-
-    overwriteConfig: true
-
-    # List of plugins to be install during Jenkins master start
-    installPlugins:
-      - workflow-job:2.40
-      - workflow-aggregator:2.6
-      - credentials-binding:1.24
-      - git:4.7.1
-      - maven-plugin:3.8
-      - config-file-provider:3.8.0
-      - configuration-as-code:1.47
-
-    initScripts:
-        # from https://github.com/jenkinsci/jenkins-scripts/blob/master/scriptler/configMavenAutoInstaller.groovy
-        mavenInstaller: |
-           import hudson.tasks.Maven.MavenInstallation;
-           import hudson.tools.InstallSourceProperty;
-           import hudson.tools.ToolProperty;
-           import hudson.tools.ToolPropertyDescriptor;
-           import hudson.util.DescribableList;
-
-           def mavenDesc = jenkins.model.Jenkins.instance.getExtensionList(hudson.tasks.Maven.DescriptorImpl.class)[0]
-
-           def isp = new InstallSourceProperty()
-           def autoInstaller = new hudson.tasks.Maven.MavenInstaller("3.6.1")
-           isp.installers.add(autoInstaller)
-
-           def proplist = new DescribableList<ToolProperty<?>, ToolPropertyDescriptor>()
-           proplist.add(isp)
-
-           def installation = new MavenInstallation("mvn361", "", proplist)
-
-           mavenDesc.setInstallations(installation)
-           mavenDesc.save()
-
-    #runAsUser: 1000
-    #fsGroup: 1000
-
-    #  initScripts:
-    #    - |
-    #      mkdir /var/certs
-    #      pushd /var/b64certs
-    #      for cert in *; do
-    #      base64 -d ${cert} > /var/certs/${cert}
-    #      keytool -import -trustcacerts -keystore /etc/ssl/certs/java/cacerts \
-    #      -storepass changeit -noprompt -alias ${cert} -file /var/certs/${cert}
-    #      done
-    #      popd
-
-
-    ingress:
-      enabled: true
-      # For Kubernetes v1.14+, use 'networking.k8s.io/v1beta1'
-      apiVersion: "extensions/v1beta1"
-      hostName: jenkins.mycluster
-      # tls:
-      #   - secretName: sample-tls
-      #     hosts:
-      #       - jenkins.mycluster
-
-  agent:
-    imagePullSecretName: sa-devops
-    # Controls how slave pods are retained after the Jenkins build completes
-    # Possible values: Always, Never, OnFailure
-    podRetention: "Never"
-    volumes:
-      - type: configMap
-        name: jenkins-certs
-        mountPath: /var/b64certs
-    envVars:
-        - name: GIT_CURL_VERBOSE
-          value: 1
-        - name: GIT_SSL_NO_VERIFY
-          value: 1
-        - name: MAVEN_OPTS
-          value: "-Dmaven.wagon.http.ssl.insecure=true"
-
-    # Executed command when side container gets started
-    #command: |
-    #  #!/bin/bash
-    #  mkdir /var/certs
-    #  pushd /var/b64certs
-    #  for cert in *; do
-    #  base64 -d ${cert} > /var/certs/${cert}
-    #  keytool -import -trustcacerts -keystore /etc/ssl/certs/java/cacerts -storepass changeit -noprompt -alias ${cert} -file /var/certs/${cert}
-    #  done
-    #  popd
-
-  persistence:
-    enabled: true
-    #storageClass: null
-    accessMode: "ReadWriteOnce"
-    size: "6Gi"
