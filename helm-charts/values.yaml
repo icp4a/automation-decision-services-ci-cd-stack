@@ -1,0 +1,46 @@
+
+devops-nexus:
+  nexus:
+    imageName: devops-stack/nexus
+    imageTag: 0.2.1
+
+    resources:
+      requests:
+        cpu: 500m
+        memory: 512Mi
+      limits:
+        cpu: 1
+        memory: 4800Mi
+
+    config:
+      users:
+        - username: nexusdemo
+          password: nexusdemo
+    env:
+      - name: NEXUS_SECURITY_RANDOMPASSWORD
+        value: "false"
+      - name: NEXUS_DATA_CHOWN
+        value: "false"
+
+  nexusProxy:
+    env:
+      nexusHttpHost: nexus.mycluster
+
+  ingress:
+    enabled: true
+    annotations:
+      nginx.ingress.kubernetes.io/proxy-body-size: 500m
+      ingress.kubernetes.io/proxy-body-size: 500m
+    # # NOTE: Can't use 'false' due to https://github.com/jetstack/kube-lego/issues/173.
+      kubernetes.io/ingress.allow-http: true
+      kubernetes.io/ingress.class: gce
+    # kubernetes.io/ingress.global-static-ip-name: ""
+      kubernetes.io/tls-acme: true
+    tls:
+      enabled: true
+      secretName: cicd-tls
+
+  persistence:
+    #storageClass: null
+    storageSize: 6Gi
+
