@@ -1,5 +1,5 @@
 {{- if .Values.ingress.enabled -}}
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ template "nexus.fullname" . }}
@@ -19,17 +19,20 @@ spec:
       http:
         paths:
           - backend:
+              service:
             {{- if .Values.nexusProxy.svcName }}
-              serviceName: {{ .Values.nexusProxy.svcName }}
+                name: {{ .Values.nexusProxy.svcName }}
             {{- else }}
-              serviceName: {{ template "nexus.fullname" . }}
+                name: {{ template "nexus.fullname" . }}
             {{- end }}
+                port:
 {{- if .Values.nexusProxy.enabled }}
-              servicePort: {{ .Values.nexusProxy.port }}
+                  number: {{ .Values.nexusProxy.port }}
 {{- else }}
-              servicePort: {{ .Values.nexus.nexusPort }}
+                  number: {{ .Values.nexus.nexusPort }}
 {{- end }}
             path: {{ .Values.ingress.path }}
+            pathType: Prefix
 {{- end }}
 {{- if .Values.nexusProxy.enabled -}}
   {{- if .Values.nexusProxy.env.nexusDockerHost }}
@@ -37,13 +40,16 @@ spec:
       http:
         paths:
           - backend:
+              service:
             {{- if .Values.nexusProxy.svcName }}
-              serviceName: {{ .Values.nexusProxy.svcName }}
+                name: {{ .Values.nexusProxy.svcName }}
             {{- else }}
-              serviceName: {{ template "nexus.fullname" . }}
+                name: {{ template "nexus.fullname" . }}
             {{- end }}
-              servicePort: {{ .Values.nexusProxy.port }}
+                port: 
+                  number: {{ .Values.nexusProxy.port }}
             path: {{ .Values.ingress.path }}
+            pathType: Prefix
   {{- end }}
 {{- end -}}
   {{- with .Values.ingress.rules }}
